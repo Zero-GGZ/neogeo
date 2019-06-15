@@ -9,6 +9,11 @@ For ubuntu
 	3)run : ./bin/gngeo kof97     # start game
 For ARM
 1.build SDL for ARM
+	1)./configure --prefix=/home/ubuntu/SDL_Build/ --disable-pulseaudio --disable-tslib --build=i386 --host=arm-none-linux-gnueabi
+	2)make
+	3)make install
 2.run:./configure --build=i686-pc-linux-gnu --host=arm-linux --with-sdl-prefix=/home/ubuntu/SDL_Build --prefix=/home/ubuntu/GAME/output_file/
 3.modified ./src/mkstate.h
 	//int mkstate_data(gzFile gzf,void *data,int size,int mode);
+#error:libm.so.6 not found in ../lib/libSDL.so	
+#basic C lib not found may be because lib point dir wrong when ./configure
