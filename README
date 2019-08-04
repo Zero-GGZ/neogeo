@@ -7,13 +7,28 @@ For ubuntu
 	1)copy bios neogeo.zip to share/gngeo
 	2)copy rom kof97.zip to share/gngeo
 	3)run : ./bin/gngeo kof97     # start game
-For ARM
+For ARM (我的工具链为arm-linux-XXX=arm-linux-gnueabihf)
 1.build SDL for ARM
 	1)./configure --prefix=/home/ubuntu/SDL_Build/ --disable-pulseaudio --disable-tslib --build=i386 --host=arm-none-linux-gnueabi
 	2)make
 	3)make install
-2.run:./configure --build=i686-pc-linux-gnu --host=arm-linux --with-sdl-prefix=/home/ubuntu/SDL_Build --prefix=/home/ubuntu/GAME/output_file/
-3.modified ./src/mkstate.h
+2.build zlib for arm
+	1)下载zlib源码
+	2)export CC=arm-linux-XXX   
+	3)./configure --prefix=../out-dir 
+	4)make&&make install
+	5)cp out file to arm-linux-XXX 工具链下
+3.build gngeo
+	1)./configure --build=i686-pc-linux-gnu --host=arm-linux-XXX --with-sdl-prefix=/home/ubuntu/SDL_Build --prefix=/home/ubuntu/GAME/output_file/
+	2)make&&make install 
+4.modified ./src/mkstate.h
 	//int mkstate_data(gzFile gzf,void *data,int size,int mode);
-#error:libm.so.6 not found in ../lib/libSDL.so	
-#basic C lib not found may be because lib point dir wrong when ./configure
+编过程出现的问题
+1.必须使用sdl1
+2.当报错pow等C语言标准库出错则是工具链的问题
+3.当工具链无法调用zlib时，报错
+roms.o: In function `load_game_config': src/roms.c:2027: undefined reference to `dr_gno_romname'd等未定义错误
+4.报错uses VFP register arguments, mame_layer.o does not，为浮点调用出错，修改顶层Makefile
+	Makefile中 :
+	156:-- CC = arm-linux-gnueabihf-gcc 
+	156:++ CC = arm-linux-gnueabihf-gcc -mfloat-abi=hard
